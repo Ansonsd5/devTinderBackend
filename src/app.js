@@ -11,7 +11,12 @@ app.get('/user', (req, res) => {
 
 app.post('/user',(req, res)=>{
   console.log("Save data to DB");
-  res.send("Data saved to DB successfully|")
+  res.status(204).send({status : 204,data :"Data saved to DB successfully|"})
+})
+
+app.get('/user/:userId/userName/:passkey',(req, res)=>{
+console.log(req.params);
+res.send("Route ending with a")
 })
 
 
