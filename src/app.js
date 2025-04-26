@@ -8,8 +8,16 @@ const app = express();
 app.use('/admin',adminAuth);
 
 app.get('/user/login',(req,res)=>{
+    throw new Error("Error in login")
     console.log("User logged in successfully");
     res.send("User logged in successfully");
+})
+
+app.get('/testerror',(req,res)=>{
+    
+        throw new Error("Created a new Error");
+        res.send("jkdfkj djfkdf error")
+   
 })
 
 app.get('/admin/userdata',(req,res)=>{
@@ -28,5 +36,15 @@ app.use('/user',userAuth, (req,res,next)=>{
     res.send("Response from 2nd function");
 }
 )
+
+//Error handling gracefully
+
+app.use('/',(err,req,res,next)=>{
+    if(err){
+        // res.send("Somthing went wrong");
+        console.log(`Error is :::${err}`)
+        res.send("Something went wrong")
+    }
+})
 
 app.listen(7777,()=>{console.log("App listening at 7777")})
