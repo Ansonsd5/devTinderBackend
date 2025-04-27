@@ -1,50 +1,33 @@
-import  express  from "express";
-import { adminAuth, userAuth } from './middlewares/auth.js'; 
-
+const express = require("express");
+const connectDB = require("./config/database");
 const app = express();
 
-// app.use('/route',"RH1",["RH2","RH3"],"RH4") valid 
+const User = require('./models/user');
 
-app.use('/admin',adminAuth);
+app.post('/signup',async (req,res)=>{
+ const userObj = {
+  firstName : "Anson",
+  lastName : "Dsouza",
+  email : "anson11sd@gmail.com",
+  password : "Anson",
 
-app.get('/user/login',(req,res)=>{
-    throw new Error("Error in login")
-    console.log("User logged in successfully");
-    res.send("User logged in successfully");
+ }
+
+ //Creating new instance of new user
+const user = new User(userObj);
+
+ await user.save();
+ console.log("Data saved to DB ")
 })
 
-app.get('/testerror',(req,res)=>{
-    
-        throw new Error("Created a new Error");
-        res.send("jkdfkj djfkdf error")
-   
-})
-
-app.get('/admin/userdata',(req,res)=>{
-    console.log("User data retrived form DB and sent");
-    res.send("User deatils are recived")
-})
-
-app.use('/user',userAuth, (req,res,next)=>{
-    console.log("user route is called");
-    next();
-    // console.log("coming back again")
-    // res.status(404).send("Response 1");
-},
-(req,res)=>{
-    console.log("user second callback function");
-    res.send("Response from 2nd function");
-}
-)
-
-//Error handling gracefully
-
-app.use('/',(err,req,res,next)=>{
-    if(err){
-        // res.send("Somthing went wrong");
-        console.log(`Error is :::${err}`)
-        res.send("Something went wrong")
-    }
-})
-
-app.listen(7777,()=>{console.log("App listening at 7777")})
+connectDB()
+  .then(() => {
+    console.log("Data base connected to DataBase ");
+    app.listen(7777, () => {
+      console.log("App listening at 7777");
+    });
+  })
+  .catch(() => {
+    console.log("Failed to connect to dataBase");
+  });
+// app.use('/route',"RH1",["RH2","RH3"],"RH4") valid

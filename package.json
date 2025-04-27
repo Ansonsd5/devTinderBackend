@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/app.js",
-    "dev":"nodemon src/app.js"
+    "dev": "nodemon src/app.js"
   },
-  "type": "module",
+ 
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/Ansonsd5/devTinderBackend.git"
@@ -25,6 +25,10 @@
   },
   "homepage": "https://github.com/Ansonsd5/devTinderBackend#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mongoose": "^8.14.0"
+  },
+  "devDependencies": {
+    "prettier": "3.5.3"
   }
 }
