@@ -2,22 +2,72 @@ const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
 
-const User = require('./models/user');
+const User = require("./models/user");
 
-app.post('/signup',async (req,res)=>{
- const userObj = {
-  firstName : "Anson",
-  lastName : "Dsouza",
-  email : "anson11sd@gmail.com",
-  password : "Anson",
+app.use(express.json());
 
- }
+app.post("/signup", async (req, res) => {
+  //  const userObj = {
+  //   firstName : "Anson",
+  //   lastName : "Dsouza",
+  //   emailId : "ansosn11sd@gmail.com",
+  //   password : "Ansons",
 
- //Creating new instance of new user
-const user = new User(userObj);
+  //  }
 
- await user.save();
- console.log("Data saved to DB ")
+  //Creating new instance of new user
+
+  console.log("req boday", req.body);
+  const user = new User(req.body);
+
+  try {
+    const savedData = await user.save();
+    res.status(201).send(savedData);
+  } catch (error) {
+    res.status(501).send("Something went wrong");
+  }
+  
+});
+
+app.get("/getuser", async (req, res) => {
+  try {
+    const userDataFromDB = await User.find({ emailId: req.body.emailId });
+    if (userDataFromDB.length) {
+      res.send(userDataFromDB);
+    } else {
+      res.status(404).send("No match found");
+    }
+  } catch (error) {
+    res.send("Could not find the User");
+  }
+});
+
+app.get("/getsingleuser",async(req,res)=>{
+  const email = req.body.emailId;
+  try {
+    const user =await User.findOne({emailId : email});
+    if(!user){
+      res.status(404).send("Not found")
+    }else{
+      res.status(200).send(user);
+    }
+    
+  } catch (error) {
+    res.status(404).send("No match found");
+  }
+})
+
+app.get("/feed",async (req,res)=>{
+  try {
+    const allUserInDB = await User.find({});
+    if(allUserInDB.length){
+      res.status(200).send(allUserInDB);
+    }else{
+      res.status(404).send("No feed found")
+    }
+  } catch (error) {
+    res.status(500).send("No user found");
+  }
 })
 
 connectDB()
