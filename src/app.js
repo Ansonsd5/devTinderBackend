@@ -70,6 +70,31 @@ app.get("/feed",async (req,res)=>{
   }
 })
 
+app.delete('/delete', async (req,res)=>{
+  try {
+    const userId = req.body._id;
+    await User.findByIdAndDelete(userId);
+    res.status(200).send(`User with id-${userId} deleted Successfully`)
+  } catch (error) {
+    res.status(500).send(`Failed to delete user`);
+  }
+})
+
+app.patch('/update',async (req,res)=>{
+  const userId = req.body.userId;
+  const data = req.body;
+  try {
+    const updatedUser = await User.findByIdAndUpdate(userId,data,{returnDocument :'after'});
+    if(updatedUser){
+      res.status(201).send(updatedUser);
+    }else{
+      res.status(500).send("Failed to update");
+    }
+  } catch (error) {
+    res.send("Something is wrong")
+  }
+})
+
 connectDB()
   .then(() => {
     console.log("Data base connected to DataBase ");
