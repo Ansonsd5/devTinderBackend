@@ -1,22 +1,29 @@
-export const adminAuth = (req,res,next)=>{
-    console.log("Auth called")
-    const key = 'secret';
-    if(key !== 'secret'){
-        res.status(401).send("Unauthorized request")
-    }else{
-        next()
-    }
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
+const userAuth = async (req, res, next) => {
+  try {
+    const { token } = req.cookies;
+    const decodedMessage = await jwt.verify(token, "Token@123");
+    if (decodedMessage) {
+      // return decodedMessage
+      const { _id } = decodedMessage;
+      const user = await User.findById(_id);
+      if (user) {
+        req.user = user;
+        next();
+      } else {
+        throw new Error("Invalid token");
+      }
+    } else {
+      throw new Error("Invalid token");
+    }
+  } catch (error) {
+    res.status(404).send("ERROR :: " + error.message);
+  }
 };
 
-export const userAuth = (req,res,next)=>{
-    console.log("User Auth  called")
-    const key = 'secret';
-    if(key !== 'secret'){
-        res.status(401).send("Unauthorized user request")
-    }else{
-        next()
-    }
 
-};
-
+module.exports ={
+    userAuth,
+}
