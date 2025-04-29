@@ -7,13 +7,7 @@ const User = require("./models/user");
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  //  const userObj = {
-  //   firstName : "Anson",
-  //   lastName : "Dsouza",
-  //   emailId : "ansosn11sd@gmail.com",
-  //   password : "Ansons",
 
-  //  }
 
   //Creating new instance of new user
 
@@ -24,9 +18,9 @@ app.post("/signup", async (req, res) => {
     const savedData = await user.save();
     res.status(201).send(savedData);
   } catch (error) {
-    res.status(501).send("Something went wrong");
+    res.status(501).send(`Error : ${error.message}`);
   }
-  
+  res.send("somthing went wrong")
 });
 
 app.get("/getuser", async (req, res) => {
@@ -80,20 +74,40 @@ app.delete('/delete', async (req,res)=>{
   }
 })
 
-app.patch('/update',async (req,res)=>{
+app.patch("/update", async (req, res) => {
   const userId = req.body.userId;
   const data = req.body;
+  
   try {
-    const updatedUser = await User.findByIdAndUpdate(userId,data,{returnDocument :'after'});
-    if(updatedUser){
+    const updatedUser = await User.findByIdAndUpdate(userId, data, {
+      returnDocument: "after",
+      runValidators :true,
+    });
+    if (updatedUser) {
       res.status(201).send(updatedUser);
-    }else{
+    } else {
       res.status(500).send("Failed to update");
     }
   } catch (error) {
-    res.send("Something is wrong")
+    res.send("Something is wrong");
   }
-})
+});
+
+app.patch("/updatebyemail", async (req, res) => {
+  const email = req.body.emailId;
+  let newData = req.body;
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { emailId: email },
+      newData,
+      { returnDocument: "after", runValidators: true }
+    );
+    res.status(201).send(updatedUser);
+  } catch (error) {
+    res.status(500).send(`ERROR :: ${error.message}`);
+  }
+  res.send("Somthing went wrong")
+});
 
 connectDB()
   .then(() => {
