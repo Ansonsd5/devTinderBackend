@@ -1,5 +1,5 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
+
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const connectDB = require("./config/database");
@@ -37,38 +37,23 @@ app.post("/signup", async (req, res) => {
   res.send("somthing went wrong");
 });
 
-app.get("/getuser", async (req, res) => {
-  try {
-    const userDataFromDB = await User.find({ emailId: req.body.emailId });
-    if (userDataFromDB.length) {
-      res.send(userDataFromDB);
-    } else {
-      res.status(404).send("No match found");
-    }
-  } catch (error) {
-    res.send("Could not find the User");
-  }
-});
-
 app.get("/login", async (req, res) => {
   const { password, emailId } = req.body;
- 
+
   try {
     validateLoginData(req?.body);
-    const userDeatilsFromDB = await User.findOne({ emailId: emailId });
-    if (!userDeatilsFromDB) {
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
       throw new Error("Invalid Credentials");
     }
 
-    const DBStroredPassword = userDeatilsFromDB?.password;
-
-    const isValidUser = await bcrypt.compare(password, DBStroredPassword);
+    const isValidUser = await user.verifyPassword(password);
 
     if (isValidUser) {
-      const token = await jwt.sign({ _id: userDeatilsFromDB._id }, "Token@123");
+      const token = await user.getJWT();
 
       res.cookie("token", token);
-      res.status(200).send(userDeatilsFromDB);
+      res.status(200).send(user);
     } else {
       throw new Error("Invalid Credentials");
     }
@@ -91,85 +76,19 @@ app.get("/profile",userAuth, async (req, res) => {
   }
 });
 
-app.get("/getsingleuser", async (req, res) => {
-  const email = req.body.emailId;
+app.post("/sendconnectionrequest", userAuth, async (req, res) => {
   try {
-    const user = await User.findOne({ emailId: email });
-    if (!user) {
-      res.status(404).send("Not found");
+    const user = req.user;
+    if (user) {
+      res
+        .status(201)
+        .send(`${user?.firstName} send you the connection request`);
     } else {
-      res.status(200).send(user);
+      throw new Error("Please Login");
     }
   } catch (error) {
-    res.status(404).send("No match found");
+    res.status(500).send("ERROR :: " + error.message);
   }
-});
-
-app.get("/feed", async (req, res) => {
-  try {
-    const allUserInDB = await User.find({});
-    if (allUserInDB.length) {
-      res.status(200).send(allUserInDB);
-    } else {
-      res.status(404).send("No feed found");
-    }
-  } catch (error) {
-    res.status(500).send("No user found");
-  }
-});
-
-app.delete("/delete", async (req, res) => {
-  try {
-    const userId = req.body._id;
-    await User.findByIdAndDelete(userId);
-    res.status(200).send(`User with id-${userId} deleted Successfully`);
-  } catch (error) {
-    res.status(500).send(`Failed to delete user`);
-  }
-});
-
-app.patch("/update/:userId", async (req, res) => {
-  const userId = req.params?.userId;
-  const data = req.body;
-
-  try {
-    const ALLOWED_FIELDS = ["password", "age", "about", "skills"];
-    const isAllowedUpdate = Object.keys(data).every((key) =>
-      ALLOWED_FIELDS.includes(key)
-    );
-
-    if (!isAllowedUpdate) {
-      throw new Error("Update not Allowed");
-    }
-
-    const updatedUser = await User.findByIdAndUpdate({ _id: userId }, data, {
-      returnDocument: "after",
-      runValidators: true,
-    });
-    if (updatedUser) {
-      res.status(201).send(updatedUser);
-    } else {
-      res.status(500).send("Failed to update");
-    }
-  } catch (error) {
-    res.send("ERROR ::" + error.message);
-  }
-});
-
-app.patch("/updatebyemail", async (req, res) => {
-  const email = req.body.emailId;
-  let newData = req.body;
-  try {
-    const updatedUser = await User.findOneAndUpdate(
-      { emailId: email },
-      newData,
-      { returnDocument: "after", runValidators: true }
-    );
-    res.status(201).send(updatedUser);
-  } catch (error) {
-    res.status(500).send(`ERROR :: ${error.message}`);
-  }
-  res.send("Somthing went wrong");
 });
 
 connectDB()
