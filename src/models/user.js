@@ -34,6 +34,11 @@ const userSchema = new mongoose.Schema(
     age: {
       type: Number,
       maxLength: 3,
+      validate(value){
+        if(value.length > this.maxlength){
+          throw new Error("Invalid age input");
+        }
+      }
     },
     gender: {
       type: String,
@@ -48,7 +53,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       validate(value) {
         if (!validator.isURL(value)) {
-          throw new Error("Enter a valid email " + value);
+          throw new Error("Enter a valid photo url " + value);
         }
       },
     },
@@ -59,7 +64,6 @@ const userSchema = new mongoose.Schema(
     skills: {
       type: [String],
       validate(value) {
-        console.log("value", value);
         if (value.length > 5) {
           throw new Error("Add only top 5 skills");
         }
@@ -83,6 +87,9 @@ userSchema.methods.verifyPassword = async function (userInputPass) {
   const isValidUser = await bcrypt.compare(userInputPass, DBPassword);
   return isValidUser;
 };
+
+
+
 
 const UserModel = mongoose.model("User",userSchema);
 
