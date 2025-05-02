@@ -15,7 +15,6 @@ requestRouter.post("/request/:status/:toUserId", userAuth, async (req, res) => {
     const fromUserName =req.user.firstName;
 
     const generateMsg = (status, fromUserName, toUserName) => {
-      console.log(fromUserName, toUserName);
       
       switch (status) {
         case 'interested':
@@ -36,7 +35,7 @@ requestRouter.post("/request/:status/:toUserId", userAuth, async (req, res) => {
     const isToUserExist = await User.findById({ _id: toUserId });
 
     if (!isToUserExist) {
-      throw new Error("ERROR ::"+ error.message)
+      throw new Error("User not found Exist");
     }else{
       toUserName = isToUserExist.firstName;
     }
@@ -70,5 +69,49 @@ requestRouter.post("/request/:status/:toUserId", userAuth, async (req, res) => {
     res.status(500).send("ERROR :: " + error.message);
   }
 });
+
+requestRouter.post("/request/review/:status/:requestId", userAuth, async (req,res) => {
+  try {
+    const {status,requestId} = req.params;
+    const loggedInUser = req.user;
+  
+
+    const allowedStatus = ['accepted', 'rejected'];
+
+    if (!allowedStatus.includes(status)) {
+      res.status(400).json({ message: "Status not allowed" });
+    }
+
+    const connectRequest = await ConnectionRequest.findOne({
+      _id: requestId,
+      toUserId : loggedInUser._id,
+      status : 'interested'
+    });
+
+
+    if(!connectRequest){
+      res.status(404).json("Connection request not found");
+    }
+
+    connectRequest.status = status;
+
+    const data = await connectRequest.save();
+
+    res.status(200).json({
+      message : "Connection accepted successfulluy",
+      data : data 
+    })
+
+
+
+
+
+
+  } catch (error) {
+    res.status(500).json({
+      message : "Cannot review the request at the moment"
+    })
+  }
+})
 
 module.exports = requestRouter;

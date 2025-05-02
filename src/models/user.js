@@ -16,11 +16,12 @@ const userSchema = new mongoose.Schema(
     },
     emailId: {
       type: String,
-      lowerCase: true,
+      lowercase: true,
       required: true,
       unique: true,
       trim: true,
       maxLength: 60,
+      background : true ,
       validate(value) {
         if (!validator.isEmail(value)) {
           throw new Error("Enter a valid email " + value);
@@ -73,6 +74,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
 userSchema.methods.getJWT = async function () {
   const user = this;
   const token = await jwt.sign({ _id: user._id }, "Token@123", {
@@ -87,6 +89,14 @@ userSchema.methods.verifyPassword = async function (userInputPass) {
   const isValidUser = await bcrypt.compare(userInputPass, DBPassword);
   return isValidUser;
 };
+
+userSchema.pre('save', async function (next) {
+  const existing = await mongoose.models.User.findOne({ emailId: this.emailId });
+  if (existing) {
+    return next(new Error('Email already exists!'));
+  }
+  next();
+});
 
 
 

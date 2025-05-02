@@ -26,9 +26,12 @@ authRouter.post("/signup", async (req, res) => {
     const savedData = await user.save();
     res.status(201).send(savedData);
   } catch (error) {
+    if (error.code === 11000) {
+      throw new Error('❌ Duplicate email found.');
+    }
     res.status(501).send(`Error : ${error.message}`);
   }
-  res.send("somthing went wrong");
+  
 });
 
 authRouter.post("/login", async (req, res) => {
