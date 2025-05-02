@@ -12,7 +12,7 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     if (user) {
       res.status(201).send(user);
     } else {
-      throw new Error("Somthings is wrong with Auth");
+      res.status(401).send("Please login");
     }
   } catch (error) {
     
