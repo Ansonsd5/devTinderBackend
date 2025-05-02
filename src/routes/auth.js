@@ -10,6 +10,7 @@ authRouter.post("/signup", async (req, res) => {
   //Creating new instance of new user
 
   const { firstName, lastName, emailId, password } = req?.body;
+  const USER_SAFE_DATA = "firstName age gender skills photoUrl about";
 
   try {
     validateSignUpData(req.body);
@@ -21,10 +22,10 @@ authRouter.post("/signup", async (req, res) => {
       lastName,
       emailId,
       password: hashedPassword,
-    });
+    }).populate(USER_SAFE_DATA);
 
     const savedData = await user.save();
-    res.status(201).send(savedData);
+    res.status(201).json(savedData);
   } catch (error) {
     if (error.code === 11000) {
       throw new Error('❌ Duplicate email found.');
