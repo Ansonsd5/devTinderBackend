@@ -91,13 +91,13 @@ userSchema.methods.verifyPassword = async function (userInputPass) {
   return isValidUser;
 };
 
-userSchema.pre('save', async function (next) {
-  const existing = await mongoose.models.User.findOne({ emailId: this.emailId });
-  if (existing) {
-    return next(new Error('Email already exists!'));
-  }
-  next();
-});
+// userSchema.pre('save', async function (next) {
+//   const existing = await mongoose.models.User.findOne({ emailId: this.emailId });
+//   if (existing) {
+//     return next(new Error('Email already exists!'));
+//   }
+//   next();
+// });
 
 
 

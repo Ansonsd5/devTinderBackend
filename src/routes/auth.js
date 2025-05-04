@@ -22,7 +22,7 @@ authRouter.post("/signup", async (req, res) => {
       lastName,
       emailId,
       password: hashedPassword,
-    }).populate(USER_SAFE_DATA);
+    });
 
     const savedData = await user.save();
     res.status(201).json(savedData);

@@ -63,7 +63,7 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
     let page = parseInt(req.query.page) || 1;
-    let limit = parseInt(req.query.limit) || 4;
+    let limit = parseInt(req.query.limit) || 6;
 
     limit = limit > 25 ? 25 : limit;
     let skip = (page - 1) * limit;
@@ -90,9 +90,7 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
       .limit(limit);
 
     res.json({
-      data: {
-        feedData: feedData,
-      },
+      feedData,
     });
   } catch (error) {
     res.send(404).json({
