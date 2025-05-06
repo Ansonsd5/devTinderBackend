@@ -43,7 +43,11 @@ console.log("comeing",req.body)
         status :201,
       });
   } catch (error) {
-    res.status(500).send("ERROR :: " + error.message);
+    res.status(500).json({
+      status: "error",
+      message: "An unexpected error occurred.",
+      details: error.message
+    });
   }
 });
 
