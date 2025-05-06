@@ -21,9 +21,7 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 
-app.use('/',(req,res)=>{
-  res.send("done")
-})
+
 
 connectDB()
   .then(() => {
