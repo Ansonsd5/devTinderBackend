@@ -6,9 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/app.js",
-    "dev":"nodemon src/app.js"
+    "dev": "nodemon src/app.js"
   },
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/Ansonsd5/devTinderBackend.git"
@@ -25,6 +24,15 @@
   },
   "homepage": "https://github.com/Ansonsd5/devTinderBackend#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.14.0",
+    "validator": "^13.15.0"
+  },
+  "devDependencies": {
+    "prettier": "3.5.3"
   }
 }
