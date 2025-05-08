@@ -1,4 +1,5 @@
 const express = require("express");
+require('dotenv').config();
 const bcrypt = require("bcrypt");
 const { userAuth } = require("../middlewares/auth");
 const User = require("../models/user");
@@ -59,7 +60,7 @@ profileRouter.patch("/profile/changepassword", userAuth, async (req, res) => {
     if (!validatePassword(newPassword)) {
       throw new Error("Invalid new password");
     }
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, process.env.SALTCOUNT);
 
     loggedInUser.password = hashedPassword;
 

@@ -5,6 +5,8 @@ const User = require("../models/user");
 
 const requestRouter = express.Router();
 
+const sendEmail = require('../utils/sendEmail');
+
 requestRouter.post("/request/:status/:toUserId", userAuth, async (req, res) => {
   let toUserName;
   
@@ -60,6 +62,11 @@ requestRouter.post("/request/:status/:toUserId", userAuth, async (req, res) => {
 
     const userMessage = generateMsg(status,fromUserName,toUserName);
 
+     const emailRes = await sendEmail.run(
+        "A new friend request from " + fromUserName,
+        fromUserName + " is " + status + " in " + toUserName
+      );
+      console.log("emailRes",emailRes);
 
     res.status(201).json({
       message: userMessage,

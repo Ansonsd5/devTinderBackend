@@ -1,4 +1,5 @@
 const express = require("express");
+require('dotenv').config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/database");
@@ -22,12 +23,11 @@ app.use("/", requestRouter);
 app.use("/", userRouter);
 
 
-
 connectDB()
   .then(() => {
     console.log("Data base connected to DataBase ");
-    app.listen(7777, () => {
-      console.log("App listening at 7777");
+    app.listen(process.env.PORT, () => {
+      console.log(`App listening at ${process.env.PORT}`);
     });
   })
   .catch(() => {
