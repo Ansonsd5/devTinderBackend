@@ -1,5 +1,4 @@
 const express = require("express");
-require('dotenv').config();
 const bcrypt = require("bcrypt");
 
 const { validateSignUpData, validateLoginData } = require("../utils/validation");
@@ -16,7 +15,7 @@ authRouter.post("/signup", async (req, res) => {
   try {
     validateSignUpData(req.body);
 
-    const hashedPassword = await bcrypt.hash(password, process.env.SALTCOUNT);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
       firstName,
