@@ -25,7 +25,13 @@ authRouter.post("/signup", async (req, res) => {
     });
 
     const savedData = await user.save();
-    res.status(201).json(savedData);
+    
+    if(savedData){
+      const token = await savedData.getJWT();
+      res.cookie("token", token);
+      res.status(200).json(savedData);
+    }
+    // res.status(201).json(savedData);
   } catch (error) {
     if (error.code === 11000) {
       throw new Error('❌ Duplicate email found.');
@@ -36,29 +42,29 @@ authRouter.post("/signup", async (req, res) => {
 });
 
 authRouter.post("/login", async (req, res) => {
-    const { password, emailId } = req.body;
-  
-    try {
-      validateLoginData(req?.body);
-      const user = await User.findOne({ emailId: emailId });
-      if (!user) {
-        throw new Error("Invalid Credentials");
-      }
-  
-      const isValidUser = await user.verifyPassword(password);
-  
-      if (isValidUser) {
-        const token = await user.getJWT();
-  
-        res.cookie("token", token);
-        res.status(200).send(user);
-      } else {
-        throw new Error("Invalid Credentials");
-      }
-    } catch (error) {
-      res.status(404).send(`Error :: ${error.message}`);
+  const { password, emailId } = req.body;
+
+  try {
+    validateLoginData(req?.body);
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
+      throw new Error("Invalid Credentials");
     }
-  });
+
+    const isValidUser = await user.verifyPassword(password);
+
+    if (isValidUser) {
+      const token = await user.getJWT();
+
+      res.cookie("token", token);
+      res.status(200).send(user);
+    } else {
+      throw new Error("Invalid Credentials");
+    }
+  } catch (error) {
+    res.status(404).send(`Error :: ${error.message}`);
+  }
+});
 
 authRouter.post("/logout", userAuth, async (req, res) => {
   try {
