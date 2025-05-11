@@ -26,7 +26,6 @@ app.use("/", userRouter);
 app.use("/", paymentRoute);
 
 
-
 connectDB()
   .then(() => {
     console.log("Data base connected to DataBase ");

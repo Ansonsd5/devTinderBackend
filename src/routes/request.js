@@ -7,7 +7,6 @@ const requestRouter = express.Router();
 
 const sendEmail = require('../utils/sendEmail');
 
-
 requestRouter.post("/request/:status/:toUserId", userAuth, async (req, res) => {
   let toUserName;
   
