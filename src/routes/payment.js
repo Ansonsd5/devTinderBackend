@@ -47,7 +47,7 @@ paymentRoute.post("/payment/create", userAuth, async (req, res) => {
       .status(200)
       .json({ ...savedPayment.toJSON(), keyId: process.env.RAZORPAY_KEY_ID });
   } catch (error) {
-    return res.status(500).json({ msg: err.message });
+    return res.status(500).json({ msg: error.message });
   }
 });
 
