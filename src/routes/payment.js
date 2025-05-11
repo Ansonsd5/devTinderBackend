@@ -52,7 +52,7 @@ paymentRoute.post("/payment/create", userAuth, async (req, res) => {
 });
 
 paymentRoute.post("/payment/webhook", async (req, res) => {
-  console.log("/payment/webhook")
+  console.log("/payment/webhook");
   try {
     const webhookSignature = req.get("X-Razorpay-Signature");
     const isWebHookValid = validateWebhookSignature(
@@ -62,7 +62,7 @@ paymentRoute.post("/payment/webhook", async (req, res) => {
     );
 
     if (!isWebHookValid) {
-     return res.status(500).json({ msg: "Webhook signature is invalid!!!!" });
+      return res.status(500).json({ msg: "Webhook signature is invalid!!!!" });
     }
 
     const paymentDetails = req.body.payload.payment.entity;
@@ -71,7 +71,6 @@ paymentRoute.post("/payment/webhook", async (req, res) => {
       orderId: paymentDetails.order_id,
     });
     payment.status = paymentDetails.status;
-    console.log("paymentbefore save", payment);
     await payment.save();
 
     const user = await User.findById({ _id: payment.userId });
@@ -81,8 +80,7 @@ paymentRoute.post("/payment/webhook", async (req, res) => {
       user.membershipType = paymentDetails.notes.membershipType;
       await user.save();
     } else {
-      console.log( "msg No user found")
-      // return res.status(404).json({ msg: "No user found" });
+      return res.status(404).json({ msg: "No user found" });
     }
 
     // TODO : Do the functionality based on the event
@@ -93,10 +91,8 @@ paymentRoute.post("/payment/webhook", async (req, res) => {
     // if(req.body.event === "payment.failed"){
 
     // }
-
-    
   } catch (error) {
-    console.log("errot webhook ",error)
+    console.log("errot webhook ", error);
     res.status(500).json({ msg: error });
   }
 });
