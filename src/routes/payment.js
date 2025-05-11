@@ -81,7 +81,8 @@ paymentRoute.post("/payment/webhook", async (req, res) => {
       user.membershipType = paymentDetails.notes.membershipType;
       await user.save();
     } else {
-      return res.status(404).json({ msg: "No user found" });
+      console.log( "msg No user found")
+      // return res.status(404).json({ msg: "No user found" });
     }
 
     // TODO : Do the functionality based on the event
@@ -95,6 +96,7 @@ paymentRoute.post("/payment/webhook", async (req, res) => {
 
     
   } catch (error) {
+    console.log("errot webhook ",error)
     res.status(500).json({ msg: error });
   }
 });
