@@ -97,4 +97,18 @@ paymentRoute.post("/payment/webhook", async (req, res) => {
   }
 });
 
+paymentRoute.get("/premium/verify", userAuth,async (req, res) => {
+  const  user  = req.user;
+  try {
+    if (user.isPremium) {
+      const { isPremium,firstName, lastName } = user;
+      return res.status(200).json({ isPremium,firstName,lastName });
+    } else {
+      return res.status(500).json({ isPremium,firstName,lastName});
+    }
+  } catch (error) {
+    res.status(500).json({ msg: "Basic user"});
+  }
+});
+
 module.exports = paymentRoute;
