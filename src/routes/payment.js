@@ -11,10 +11,8 @@ require("dotenv").config();
 const paymentRoute = express.Router();
 
 paymentRoute.post("/payment/create", userAuth, async (req, res) => {
-  console.log("coming");
   const { firstName, lastName, emailId } = req.user;
   const { membership } = req.body;
-  console.log("paises", membershipAmount[membership] * 100);
   try {
     const options = {
       amount: membershipAmount[membership] * 100,
@@ -28,7 +26,6 @@ paymentRoute.post("/payment/create", userAuth, async (req, res) => {
       },
     };
     const order = await razorpayInstance.orders.create(options);
-    console.log("order", order);
 
     const { id: orderId, status, amount, currency, receipt, notes } = order;
     const payment = new PaymentModel({
