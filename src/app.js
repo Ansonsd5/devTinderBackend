@@ -12,6 +12,7 @@ const requestRouter = require("./routes/request");
 const userRouter = require("./routes/user");
 const paymentRoute = require("./routes/payment");
 const initializeSocket = require("./utils/initializeSocket");
+const chatRouter = require("./routes/chat");
 
 app.use(cors({
   origin : "http://localhost:5173",
@@ -26,6 +27,8 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 app.use("/", paymentRoute);
+app.use("/", chatRouter);
+
 
 const server = http.createServer(app);
  initializeSocket(server);
