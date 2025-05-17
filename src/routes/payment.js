@@ -48,7 +48,7 @@ paymentRoute.post("/payment/create", userAuth, async (req, res) => {
   }
 });
 
-paymentRoute.post("/payment/webhook", async (req, res) => {
+paymentRoute.post("/payment/webhook1", async (req, res) => {
   console.log("/payment/webhook");
   try {
     const webhookSignature = req.get("X-Razorpay-Signature");
@@ -71,12 +71,14 @@ paymentRoute.post("/payment/webhook", async (req, res) => {
     await payment.save();
 
     const user = await User.findById({ _id: payment.userId });
-
+    console.log("payment user")
     if (user) {
+      console.log("isPremium is upated");
       user.isPremium = true;
       user.membershipType = paymentDetails.notes.membershipType;
       await user.save();
     } else {
+      console.log("payment not found");
       return res.status(404).json({ msg: "No user found" });
     }
 
@@ -95,7 +97,9 @@ paymentRoute.post("/payment/webhook", async (req, res) => {
 });
 
 paymentRoute.get("/premium/verify", userAuth,async (req, res) => {
+  console.log("coming inside premium verify")
   const  user  = req.user;
+  console.log("user after payment")
   try {
     if (user.isPremium) {
       const { isPremium,firstName, lastName } = user;
