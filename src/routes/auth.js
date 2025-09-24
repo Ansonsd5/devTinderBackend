@@ -24,14 +24,14 @@ authRouter.post("/signup", async (req, res) => {
       password: hashedPassword,
     });
 
-    const savedData = await user.save();
+    const savedUser = await user.save();
     
-    if(savedData){
-      const token = await savedData.getJWT();
+    if(savedUser){
+      const token = await savedUser.getJWT();
       res.cookie("token", token);
-      res.status(200).json(savedData);
+      res.status(200).json(savedUser);
     }
-    // res.status(201).json(savedData);
+    // res.status(201).json(savedUser);
   } catch (error) {
     if (error.code === 11000) {
       throw new Error('❌ Duplicate email found.');

@@ -82,7 +82,17 @@ const userSchema = new mongoose.Schema(
     }
     
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password;  // hide sensitive info
+        delete ret.__v;
+        return ret;
+      }
+    }
+  },
+ 
 );
 
 
