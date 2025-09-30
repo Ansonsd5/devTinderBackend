@@ -14,7 +14,7 @@ const validateSignUpData = (req) => {
     throw new Error("Enter Strong password");
   }
 
-  if (typeof resend !== "boolean") {
+  if (resend && typeof resend !== "boolean") {
   throw new Error("Invalid input: 'resend' must be a boolean (true or false). Do not modify this value.");
 }
 };
