@@ -1,7 +1,8 @@
 const validator = require('validator');
+const { OTP_LENGTH } = require('./constants');
 
 const validateSignUpData = (req) => {
-  const { firstName, lastName, emailId, password } = req;
+  const { firstName, lastName, emailId, password, resend } = req;
   if (!firstName.length) {
     throw new Error("Enter valid first name");
   }
@@ -12,6 +13,10 @@ const validateSignUpData = (req) => {
   if (!validator.isStrongPassword(password)) {
     throw new Error("Enter Strong password");
   }
+
+  if (typeof resend !== "boolean") {
+  throw new Error("Invalid input: 'resend' must be a boolean (true or false). Do not modify this value.");
+}
 };
 
 const validateLoginData = (req) =>{
@@ -22,6 +27,14 @@ const validateLoginData = (req) =>{
       if (!validator.isStrongPassword(password)) {
         throw new Error("Not a valid password");
       }
+}
+
+const validateOtpData = (otp) =>{
+  
+  console.log("otp",otp);
+  if(otp.length !== OTP_LENGTH){
+    throw new Error("Invalid Opt length")
+  }
 }
 
 const validatePassword = (password) =>{
@@ -49,4 +62,5 @@ module.exports = {
   validateLoginData,
   validateProfileEditData,
   validatePassword,
+  validateOtpData,
 };

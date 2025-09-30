@@ -11,7 +11,7 @@ const createSendEmailCommand = (toAddress, fromAddress, subject, body) => {
       Body: {
         Html: {
           Charset: "UTF-8",
-          Data: `<h1>${body}</h1>`,
+          Data: `<div>${body}</div>`,
         },
         Text: {
           Charset: "UTF-8",
@@ -30,10 +30,10 @@ const createSendEmailCommand = (toAddress, fromAddress, subject, body) => {
   });
 };
 
-const run = async (subject, body, toEmailId) => {
+const run = async (subject, body, toEmailId, fromEmail) => {
   const sendEmailCommand = createSendEmailCommand(
-    "anson11sd@gmail.com",
-    "team@ansonsd.com",
+    toEmailId,
+    fromEmail,
     subject,
     body
   );
@@ -49,5 +49,4 @@ const run = async (subject, body, toEmailId) => {
   }
 };
 
-// snippet-end:[ses.JavaScript.email.sendEmailV3]
 module.exports = { run };

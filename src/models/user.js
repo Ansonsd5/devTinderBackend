@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    isVerified: { type: Boolean, default: false },
     age: {
       type: Number,
       maxLength: 3,

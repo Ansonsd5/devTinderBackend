@@ -3,4 +3,6 @@ const membershipAmount = {
   gold: 700,
 };
 
-module.exports = { membershipAmount };
+const OTP_LENGTH = 6;
+
+module.exports = { membershipAmount,OTP_LENGTH };
